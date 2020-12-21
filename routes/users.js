@@ -6,7 +6,7 @@ const {getDbObject} = require('../middleware/getDbObject.js')
 router.get('/', async (req, res) => {
   try {
     const users = await User.find()
-    res.json(users)
+    res.status(200).json(users)
   } catch (err) {
     res.status(500).json({message: err.message})
   }
@@ -26,7 +26,7 @@ router.post("/", async (req, res) => {
 })
 
 router.get("/:id", getDbObject(User), (req, res) => {
-  res.json(res.dbObject)
+  res.status(200).json(res.dbObject)
 })
 
 router.put("/:id", getDbObject(User), async (req, res) => {

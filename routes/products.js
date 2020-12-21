@@ -2,6 +2,7 @@ let express = require('express')
 let router = express.Router()
 const Product = require('../models/Product')
 const {getDbObject} = require('../middleware/getDbObject.js')
+const {createDbLog} = require('../middleware/createLog.js')
 const {jwtRoutes} = require('../middleware/protectedRoutes.js')
 
 router.get('/', async (req, res) => {
@@ -28,17 +29,25 @@ router.post("/",jwtRoutes, async (req, res) => {
     }
 })
 
-router.get("/:id", getDbObject(Product), (req, res) => {
+router.get("/:id", getDbObject(Product),createDbLog, (req, res) => {
     res.status(200).json(res.dbObject)
+    if (res.newLog) {
+        res.newLog.success = true
+        res.newLog.save()
+    }
 })
 
-router.put("/:id",jwtRoutes, getDbObject(Product), async (req, res) => {
+router.put("/:id",jwtRoutes, getDbObject(Product),createDbLog, async (req, res) => {
     try {
         const updatedProduct = await res.dbObject.set(req.body)
         const dbUpdatedProduct = await updatedProduct.save()
         res.status(200).json(dbUpdatedProduct)
     } catch (err) {
         res.status(400).json({ message: err.message })
+    }
+    if (res.newLog) {
+        res.newLog.success = true
+        res.newLog.save()
     }
 })
 

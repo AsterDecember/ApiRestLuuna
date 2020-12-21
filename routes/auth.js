@@ -9,7 +9,7 @@ router.post('/', async (req, res) => {
     if(req.body.email) {
         let user = await  User.findOne({email:req.body.email}).exec();
         if ( user === null) {
-            res.status(403).json({ mensaje: "Create user with email  Post: /users"})
+            res.status(401).json({ mensaje: "Create user with email  Post: /users"})
         }
         const payload = {
             check:  true
@@ -22,7 +22,7 @@ router.post('/', async (req, res) => {
             token: token
         })
     } else {
-        res.status(403).json({ mensaje: "Send email in order to auth"})
+        res.status(401).json({ mensaje: "Send email in order to auth"})
     }
 })
 

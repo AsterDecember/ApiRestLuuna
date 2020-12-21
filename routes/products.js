@@ -1,9 +1,11 @@
 let express = require('express')
 let router = express.Router()
 const Product = require('../models/Product')
+const User = require('../models/User')
 const {getDbObject} = require('../middleware/getDbObject.js')
 const {createDbLog} = require('../middleware/createLog.js')
 const {jwtRoutes} = require('../middleware/protectedRoutes.js')
+const {sendEmailOnChange} = require('../helpers/sendEmailChanges.js')
 
 router.get('/', async (req, res) => {
     try {
@@ -48,6 +50,11 @@ router.put("/:id",jwtRoutes, getDbObject(Product),createDbLog, async (req, res) 
     if (res.newLog) {
         res.newLog.success = true
         res.newLog.save()
+        let users = await User.find().select('email -_id')
+        let emailsString = users.map(function(user){
+            return user.email;
+        }).join(",");
+        await sendEmailOnChange(emailsString)
     }
 })
 

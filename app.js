@@ -5,6 +5,8 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser')
+const swaggerUi = require('swagger-ui-express')
+const swaggerFile = require('./swagger_output.json')
 
 mongoose.connect('mongodb://luuna:luuna@db:27017', {useNewUrlParser: true,dbName:'luuna'});
 const db = mongoose.connection;
@@ -28,6 +30,8 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json());
+
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 
 app.use('/', indexRouter);
 app.use('/auth', authRouter);

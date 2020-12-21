@@ -8,7 +8,7 @@ const jwtRoutes = (req,res,next) => {
         try{
             jwt.verify(token, config.key, (err, decoded) => {
                 if (err) {
-                    return res.status(403).json({ message: 'Invalid token try get one in /auth' });
+                    return res.status(401).json({ message: 'Invalid token try get one in /auth' });
                 } else {
                     req.decoded = decoded;
                     next();
